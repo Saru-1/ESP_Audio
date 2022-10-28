@@ -7,10 +7,10 @@
 #include<unistd.h>
 
 void main(){
-	char buff[44100];
+	char buff[44100*2];
 	FILE *fptr;
 	fptr=fopen("Dwn_Audio.raw","rb");
-	fread(buff,1,44100,fptr);
+	fread(buff,2,44100,fptr);
 	struct addrinfo hints,*res;
 	memset(&hints,0,sizeof(hints));
 	getaddrinfo("192.168.68.200","5000",&hints,&res);
@@ -20,7 +20,9 @@ void main(){
 		printf("Error unable to create socket");
 	}
 	connect(s,res->ai_addr,res->ai_addrlen);
-	int i=50000;
-	send(s,buff,44100,0);
+	//send(s,buff,44100*2,0);
+	for (int i=0;i<44100*2;i+=256){
+		send(s,&buff[i],256,0);
+	}
 	
 }
